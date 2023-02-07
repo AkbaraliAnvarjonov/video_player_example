@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_player_example/data/video_model.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
-  const VideoPlayerScreen({super.key});
+  VideoPlayerScreen({super.key, required this.videoModel});
+  VideoModel videoModel;
 
   @override
   State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
@@ -16,8 +18,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-        'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4')
+    _controller = VideoPlayerController.network(widget.videoModel.url)
       ..initialize().then((_) {
         setState(() {});
       });
@@ -34,7 +35,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Video Screen")),
+      appBar: AppBar(title: Text(widget.videoModel.name)),
       body: Center(
         child: _controller.value.isInitialized
             ? AspectRatio(
@@ -130,9 +131,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                               ),
                             ),
                             Text(
-                              _controller.value.duration.inMinutes % 60 < 10
-                                  ? "${_controller.value.duration.inMinutes}:0${_controller.value.duration.inMinutes % 60}"
-                                  : "${_controller.value.duration.inMinutes}:${_controller.value.duration.inMinutes % 60}",
+                              _controller.value.duration.inSeconds % 60 < 10
+                                  ? "${_controller.value.duration.inMinutes}:0${_controller.value.duration.inSeconds % 60}"
+                                  : "${_controller.value.duration.inMinutes}:${_controller.value.duration.inSeconds % 60}",
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 15),
                             ),
